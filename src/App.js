@@ -1,24 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import rootReducer from "./rootReducer";
+import { createStore, applyMiddleware, compose } from "redux";
+import { Provider } from "react-redux";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Nav from "./Nav";
+import PostForm from "./PostForm";
+import Post from "./Post";
+import Home from "./Home";
+import thunk from "redux-thunk";
+
+const store = createStore(
+  rootReducer,
+  compose(
+    applyMiddleware(thunk),
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  )
+);
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Provider store={store}>
+      <div className="App container-fluid">
+        <BrowserRouter>
+          <Nav />
+          <Switch>
+            <Route exact path="/">
+              <Home />
+            </Route>
+            <Route exact path="/new">
+              <PostForm />
+            </Route>
+            <Route exact path="/:postId">
+              <Post />
+            </Route>
+          </Switch>
+        </BrowserRouter>
+      </div>
+    </Provider>
   );
 }
 
